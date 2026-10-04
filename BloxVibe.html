@@ -1,0 +1,800 @@
+<html>
+        <head><title>Downloaded HTML</title></head>
+        <body>
+            <pre style="white-space: pre-wrap; word-wrap: break-word;"><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BloxVibe - Mobile Optimized Secure Auth & Admin Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; touch-action: manipulation; overflow-x: hidden; }
+        .roblox-blue { background-color: #0074bd; }
+        .roblox-blue:hover { background-color: #005a96; }
+        .roblox-dark { background-color: #111827; }
+        .roblox-card { background-color: #1f2937; border: 1px solid #374151; }
+        .admin-theme { background: rgba(17, 24, 39, 0.95); border: 1px solid #dc2626; box-shadow: 0 0 20px rgba(220, 38, 38, 0.2); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- BROWSER URL / ADDRESS BAR -->
+    <div class="bg-gray-950 border-b border-gray-800 px-3 py-2 flex items-center justify-between text-xs text-gray-400 select-none flex-shrink-0 z-50">
+        <div class="flex items-center space-x-2 bg-gray-900 border border-gray-800 px-3 py-1.5 rounded-lg w-full max-w-md mx-auto shadow-inner">
+            <span class="text-emerald-400">🔒</span>
+            <span class="text-white font-mono truncate select-all text-center w-full">https://bloxvibe.com</span>
+        </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row flex-1 min-h-0">
+
+        <!-- AUTHENTICATION OVERLAY (Fixed mobile scrolling & layout clipping) -->
+        <div id="auth-overlay" class="fixed inset-0 bg-slate-950 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+            <div class="roblox-card w-full max-w-md p-5 sm:p-8 rounded-2xl shadow-2xl border border-gray-800 space-y-5 my-auto max-h-[90vh] overflow-y-auto">
+                <div class="text-center space-y-2">
+                    <div class="w-12 h-12 roblox-blue rounded-xl mx-auto flex items-center justify-center font-black text-2xl italic tracking-tighter shadow-lg">BV</div>
+                    <h1 class="text-2xl font-extrabold tracking-tight">Welcome to BloxVibe</h1>
+                    <p class="text-xs text-gray-400">Mobile-Optimized Gaming & Economy Platform</p>
+                </div>
+
+                <!-- Auth Mode Switcher Tabs -->
+                <div class="grid grid-cols-3 gap-1 bg-gray-900 p-1 rounded-xl text-xs font-semibold">
+                    <button onclick="switchAuthTab('login')" id="auth-tab-login" class="py-2.5 rounded-lg bg-gray-800 text-white transition">Login</button>
+                    <button onclick="switchAuthTab('signup')" id="auth-tab-signup" class="py-2.5 rounded-lg text-gray-400 hover:text-white transition">Sign Up</button>
+                    <button onclick="switchAuthTab('admin')" id="auth-tab-admin" class="py-2.5 rounded-lg text-red-400 hover:text-red-300 transition">Admin ID</button>
+                </div>
+
+                <!-- Standard Login Form -->
+                <div id="form-login" class="space-y-4">
+                    <div class="space-y-1">
+                        <label class="text-xs text-gray-400 font-medium">Email Address</label>
+                        <input type="email" id="login-email" placeholder="name@example.com" onkeydown="handleAuthKeypress(event, 'login')" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-3 text-sm text-white outline-none focus:border-blue-500 transition">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-xs text-gray-400 font-medium">Password</label>
+                        <input type="password" id="login-password" placeholder="••••••••" onkeydown="handleAuthKeypress(event, 'login')" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-3 text-sm text-white outline-none focus:border-blue-500 transition">
+                    </div>
+                    <button onclick="processLogin()" class="w-full roblox-blue py-3 rounded-lg text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
+                        <span>⚡</span> Sign In Instantly
+                    </button>
+                </div>
+
+                <!-- Sign Up Form -->
+                <div id="form-signup" class="space-y-4 hidden">
+                    <div class="space-y-1">
+                        <label class="text-xs text-gray-400 font-medium">Email Address</label>
+                        <input type="email" id="signup-email" placeholder="name@example.com" onkeydown="handleAuthKeypress(event, 'signup')" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-3 text-sm text-white outline-none focus:border-blue-500 transition">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-xs text-gray-400 font-medium">Secure Password</label>
+                        <input type="password" id="signup-password" placeholder="••••••••" onkeydown="handleAuthKeypress(event, 'signup')" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-3 text-sm text-white outline-none focus:border-blue-500 transition">
+                    </div>
+                    <button onclick="processSignup()" class="w-full bg-emerald-600 hover:bg-emerald-500 py-3 rounded-lg text-sm font-bold shadow-lg transition flex items-center justify-center gap-2">
+                        <span>✨</span> Create & Sign In Instantly
+                    </button>
+                </div>
+
+                <!-- Admin ID Login Form -->
+                <div id="form-admin" class="space-y-4 hidden">
+                    <div class="space-y-1">
+                        <label class="text-xs text-red-400 font-medium">Admin Username ID</label>
+                        <input type="text" id="admin-username-input" value="GrandEmperor" placeholder="GrandEmperor" onkeydown="handleAuthKeypress(event, 'admin')" class="w-full bg-gray-900 border border-red-900/50 rounded-lg px-3 py-3 text-sm text-white outline-none focus:border-red-500 transition font-mono">
+                    </div>
+                    <button onclick="processAdminLogin()" class="w-full bg-red-700 hover:bg-red-600 py-3 rounded-lg text-sm font-bold text-white shadow-lg transition flex items-center justify-center gap-2">
+                        <span>🛡️</span> Instant Admin Sign-In
+                    </button>
+                    <div class="bg-red-950/20 border border-red-500/30 p-3 rounded-lg text-xs text-red-300">
+                        🛡️ Authorized owner ID <strong class="text-white">GrandEmperor</strong> grants instant high-level clearance.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIDEBAR NAVIGATION -->
+        <aside class="w-full md:w-64 roblox-dark flex flex-col justify-between border-b md:border-b-0 md:border-r border-gray-800 select-none flex-shrink-0">
+            <div>
+                <div class="p-3 sm:p-4 md:p-6 flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-9 h-9 roblox-blue rounded-lg flex items-center justify-center font-black text-xl italic tracking-tighter shadow-lg">BV</div>
+                        <span class="text-xl font-bold tracking-tight">BloxVibe</span>
+                    </div>
+                    <span id="badge-role" class="text-xs bg-red-500/20 text-red-400 border border-red-500/30 px-2.5 py-1 rounded-full font-semibold">Admin</span>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <nav class="flex md:flex-col overflow-x-auto px-3 py-2 md:space-y-1 space-x-2 md:space-x-0 scrollbar-none">
+                    <button onclick="switchTab('home')" id="nav-home" class="flex-shrink-0 md:w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium bg-gray-800 text-white transition">
+                        <span>🏠</span> <span>Home</span>
+                    </button>
+                    <button onclick="switchTab('games')" id="nav-games" class="flex-shrink-0 md:w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-800 hover:text-white transition">
+                        <span>🎮</span> <span>Games</span>
+                    </button>
+                    <button onclick="switchTab('store')" id="nav-store" class="flex-shrink-0 md:w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-800 hover:text-white transition">
+                        <span>🛒</span> <span>Store & Coins</span>
+                    </button>
+                    <button onclick="switchTab('avatar')" id="nav-avatar" class="flex-shrink-0 md:w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-800 hover:text-white transition">
+                        <span>👕</span> <span>Avatar Shop</span>
+                    </button>
+                    <button onclick="switchTab('create')" id="nav-create" class="flex-shrink-0 md:w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-800 hover:text-white transition">
+                        <span>🛠</span> <span>Studio</span>
+                    </button>
+                    <button onclick="switchTab('admin')" id="nav-admin" class="flex-shrink-0 md:w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium bg-red-950/40 text-red-400 hover:bg-red-900/40 border border-red-900/50 transition">
+                        <span>🛡️</span> <span>Admin Panel</span>
+                    </button>
+                </nav>
+            </div>
+
+            <div class="hidden md:flex p-4 border-t border-gray-800 items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center font-bold" id="user-avatar-initials">GE</div>
+                    <div class="overflow-hidden">
+                        <p id="display-username" class="text-sm font-semibold truncate">GrandEmperor</p>
+                        <p class="text-xs text-emerald-400 flex items-center"><span class="w-2 h-2 rounded-full bg-emerald-400 inline-block mr-1"></span> Secure Session</p>
+                    </div>
+                </div>
+                <button onclick="logoutUser()" title="Log Out" class="text-xs px-2.5 py-1.5 bg-gray-800 hover:bg-red-900/50 rounded border border-gray-700 text-gray-300 hover:text-red-300 transition">🚪</button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 flex flex-col min-h-0 overflow-y-auto pb-16 md:pb-0">
+            <header class="h-16 roblox-dark border-b border-gray-800 flex items-center justify-between px-4 sm:px-6 md:px-8 sticky top-0 z-10">
+                <div class="flex items-center w-40 sm:w-64 md:w-96 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 focus-within:border-blue-500 transition">
+                    <span class="text-gray-400 mr-2 text-sm">🔍</span>
+                    <input type="text" placeholder="Search..." class="bg-transparent text-xs sm:text-sm w-full outline-none text-white placeholder-gray-500">
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="switchTab('store')" class="bg-gray-800 hover:bg-gray-700 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium border border-gray-700 flex items-center space-x-1.5 transition">
+                        <span>🪙</span> <span id="coin-display" class="text-amber-400 font-bold">4,500</span>
+                    </button>
+                    <button onclick="logoutUser()" class="text-xs px-3 py-2 bg-gray-800 hover:bg-red-900/40 rounded-lg border border-gray-700 text-gray-300 font-semibold">Logout</button>
+                </div>
+            </header>
+
+            <div class="p-4 sm:p-6 md:p-8 flex-1 space-y-6">
+                
+                <!-- HOME TAB -->
+                <div id="tab-home" class="space-y-6">
+                    <div>
+                        <h1 id="welcome-heading" class="text-xl sm:text-2xl font-bold tracking-tight">Welcome back, GrandEmperor</h1>
+                        <p class="text-xs sm:text-sm text-gray-400 mt-1">Authorized mobile developer environment active.</p>
+                    </div>
+
+                    <div class="roblox-card rounded-2xl p-5 sm:p-6 flex flex-col md:flex-row items-center justify-between gap-6 bg-gradient-to-r from-gray-900 via-gray-800 to-blue-950/40">
+                        <div class="space-y-3 max-w-lg">
+                            <span class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold uppercase tracking-wider">Featured World</span>
+                            <h2 class="text-xl sm:text-3xl font-extrabold">Classic Baseplate & City Sandbox</h2>
+                            <p class="text-gray-300 text-xs sm:text-sm">Experience smooth mobile building, retro physics, and touch Admin command controls.</p>
+                            <div class="flex items-center space-x-4 pt-2">
+                                <button onclick="launchGame()" class="roblox-blue px-6 py-3 rounded-xl font-bold text-white shadow-lg flex items-center space-x-2 active:scale-95 transition">
+                                    <span>▶</span> <span>Play Now</span>
+                                </button>
+                                <span class="text-xs text-gray-400">👥 1,420 Active</span>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-80 h-40 md:h-48 bg-gray-800 rounded-xl border border-gray-700 flex items-center justify-center relative overflow-hidden group cursor-pointer" onclick="launchGame()">
+                            <div class="absolute inset-0 bg-blue-600/10 transition"></div>
+                            <span class="text-5xl group-hover:scale-110 transition duration-300">🏙</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GAMES TAB -->
+                <div id="tab-games" class="hidden space-y-4">
+                    <h2 class="text-xl sm:text-2xl font-bold">Discover All Worlds</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                        <div class="roblox-card p-4 rounded-xl space-y-3">
+                            <div class="h-32 bg-gray-800 rounded-lg flex items-center justify-center text-3xl">🌍</div>
+                            <h4 class="font-bold text-sm">Open World Roleplay</h4>
+                            <button onclick="launchGame()" class="w-full roblox-blue py-2 rounded-lg text-xs font-bold">Play Now</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STORE & COINS TAB -->
+                <div id="tab-store" class="hidden space-y-6">
+                    <div class="bg-gradient-to-r from-emerald-950 via-gray-900 to-blue-950 border border-emerald-500/30 p-5 sm:p-6 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div class="space-y-2">
+                            <span class="bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold uppercase tracking-wider">Mobile Value Economy</span>
+                            <h2 class="text-xl sm:text-2xl font-extrabold text-white">BloxVibe Economy: 40% More Value</h2>
+                            <p class="text-gray-300 text-xs sm:text-sm max-w-xl">Get maximum purchasing power directly from your mobile device without corporate markups.</p>
+                        </div>
+                        <div class="bg-black/40 border border-emerald-500/40 p-4 rounded-xl text-center flex-shrink-0 w-full md:w-auto">
+                            <p class="text-xs text-gray-400 uppercase font-bold">Current Balance</p>
+                            <p id="store-coin-badge" class="text-2xl font-black text-amber-400 mt-1">4,500 🪙</p>
+                        </div>
+                    </div>
+
+                    <!-- Coin Top-Up Packages -->
+                    <div>
+                        <h3 class="text-lg sm:text-xl font-bold mb-4 flex items-center gap-2"><span>🪙</span> Get BloxVibe Coins</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="roblox-card p-5 rounded-xl text-center space-y-3 relative">
+                                <span class="absolute top-3 right-3 bg-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded">Starter</span>
+                                <div class="text-3xl my-2">💰</div>
+                                <h4 class="font-bold text-base">1,400 Coins</h4>
+                                <p class="text-xs text-gray-400">Includes 40% bonus value over standard platforms.</p>
+                                <button onclick="buyCoins(1400, 4.99)" class="w-full roblox-blue py-2.5 rounded-lg text-xs font-bold shadow">$4.99</button>
+                            </div>
+                            <div class="roblox-card p-5 rounded-xl text-center space-y-3 relative border-emerald-500/50 bg-gray-900/80">
+                                <span class="absolute top-3 right-3 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded">Most Popular</span>
+                                <div class="text-3xl my-2">🪙</div>
+                                <h4 class="font-bold text-base">4,800 Coins</h4>
+                                <p class="text-xs text-gray-400">30% Cheaper than equivalent Robux packs.</p>
+                                <button onclick="buyCoins(4800, 14.99)" class="w-full bg-emerald-600 hover:bg-emerald-500 py-2.5 rounded-lg text-xs font-bold shadow">$14.99</button>
+                            </div>
+                            <div class="roblox-card p-5 rounded-xl text-center space-y-3 relative">
+                                <span class="absolute top-3 right-3 bg-amber-500/20 text-amber-400 text-[10px] font-bold px-2 py-0.5 rounded">Emperor</span>
+                                <div class="text-3xl my-2">💎</div>
+                                <h4 class="font-bold text-base">15,000 Coins</h4>
+                                <p class="text-xs text-gray-400">Ultimate savings pack with maximum bonus tokens.</p>
+                                <button onclick="buyCoins(15000, 39.99)" class="w-full bg-amber-600 hover:bg-amber-500 py-2.5 rounded-lg text-xs font-bold shadow">$39.99</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Store Catalog Items -->
+                    <div>
+                        <h3 class="text-lg sm:text-xl font-bold mb-4 flex items-center gap-2"><span>🛍️</span> Gear & Gamepasses</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div class="roblox-card p-4 rounded-xl flex flex-col justify-between space-y-3">
+                                <div>
+                                    <div class="h-28 bg-gray-800 rounded-lg flex items-center justify-center text-3xl mb-3">👑</div>
+                                    <h4 class="font-bold text-sm">VIP Server Pass</h4>
+                                    <p class="text-xs text-gray-400 mt-1">Grants custom chat colors and priority queue.</p>
+                                </div>
+                                <div class="flex items-center justify-between pt-2 border-t border-gray-800">
+                                    <span class="text-amber-400 font-bold text-sm">500 🪙</span>
+                                    <button onclick="buyItem('VIP Server Pass', 500)" class="bg-gray-800 hover:bg-gray-700 px-3 py-2 rounded-lg text-xs font-bold border border-gray-700">Buy Now</button>
+                                </div>
+                            </div>
+                            <div class="roblox-card p-4 rounded-xl flex flex-col justify-between space-y-3">
+                                <div>
+                                    <div class="h-28 bg-gray-800 rounded-lg flex items-center justify-center text-3xl mb-3">✨</div>
+                                    <h4 class="font-bold text-sm">Golden Aura Skin</h4>
+                                    <p class="text-xs text-gray-400 mt-1">Equip a shining particle glow around your avatar.</p>
+                                </div>
+                                <div class="flex items-center justify-between pt-2 border-t border-gray-800">
+                                    <span class="text-amber-400 font-bold text-sm">250 🪙</span>
+                                    <button onclick="buyItem('Golden Aura Skin', 250)" class="bg-gray-800 hover:bg-gray-700 px-3 py-2 rounded-lg text-xs font-bold border border-gray-700">Buy Now</button>
+                                </div>
+                            </div>
+                            <div class="roblox-card p-4 rounded-xl flex flex-col justify-between space-y-3">
+                                <div>
+                                    <div class="h-28 bg-gray-800 rounded-lg flex items-center justify-center text-3xl mb-3">📻</div>
+                                    <h4 class="font-bold text-sm">Admin Boombox Gear</h4>
+                                    <p class="text-xs text-gray-400 mt-1">Play custom retro audio tracks in worlds.</p>
+                                </div>
+                                <div class="flex items-center justify-between pt-2 border-t border-gray-800">
+                                    <span class="text-amber-400 font-bold text-sm">350 🪙</span>
+                                    <button onclick="buyItem('Admin Boombox Gear', 350)" class="bg-gray-800 hover:bg-gray-700 px-3 py-2 rounded-lg text-xs font-bold border border-gray-700">Buy Now</button>
+                                </div>
+                            </div>
+                            <div class="roblox-card p-4 rounded-xl flex flex-col justify-between space-y-3">
+                                <div>
+                                    <div class="h-28 bg-gray-800 rounded-lg flex items-center justify-center text-3xl mb-3">🛹</div>
+                                    <h4 class="font-bold text-sm">Speed Hoverboard</h4>
+                                    <p class="text-xs text-gray-400 mt-1">Cruise around city worlds at double speed.</p>
+                                </div>
+                                <div class="flex items-center justify-between pt-2 border-t border-gray-800">
+                                    <span class="text-amber-400 font-bold text-sm">600 🪙</span>
+                                    <button onclick="buyItem('Speed Hoverboard', 600)" class="bg-gray-800 hover:bg-gray-700 px-3 py-2 rounded-lg text-xs font-bold border border-gray-700">Buy Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AVATAR TAB -->
+                <div id="tab-avatar" class="hidden space-y-4">
+                    <h2 class="text-xl sm:text-2xl font-bold">Avatar Customizer</h2>
+                    <div class="roblox-card p-6 rounded-2xl flex items-center justify-center h-56 bg-gray-900">
+                        <div class="text-center">
+                            <div class="text-5xl mb-2">🧊</div>
+                            <p class="text-xs sm:text-sm text-gray-300 font-semibold">Mobile Blocky Rig Loaded</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CREATE TAB -->
+                <div id="tab-create" class="hidden space-y-4">
+                    <h2 class="text-xl sm:text-2xl font-bold">BloxVibe Studio</h2>
+                    <div class="roblox-card p-5 rounded-2xl bg-gray-900 space-y-3">
+                        <h3 class="font-bold text-base">Start a New Project</h3>
+                        <button onclick="launchGame()" class="roblox-blue px-4 py-2.5 rounded-lg text-xs sm:text-sm font-bold shadow">Open Studio Engine</button>
+                    </div>
+                </div>
+
+                <!-- ADMIN TAB -->
+                <div id="tab-admin" class="hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <h2 class="text-xl sm:text-2xl font-bold text-red-400 flex items-center gap-2"><span>🛡️</span> Server Administration</h2>
+                            <p class="text-xs sm:text-sm text-gray-400">Manage server parameters and coin treasury directly on mobile.</p>
+                        </div>
+                        <span class="bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1 rounded-lg text-xs font-mono font-bold w-fit">LEVEL 4: OWNER</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="roblox-card p-5 rounded-xl border-amber-500/40 bg-gradient-to-b from-gray-900 to-amber-950/20 space-y-3">
+                            <h3 class="font-bold text-white text-sm flex items-center gap-2"><span>🪙</span> Treasury Coin Gen</h3>
+                            <p class="text-xs text-gray-400">Instantly generate unlimited coins for your account.</p>
+                            <button onclick="adminGiveUnlimitedCoins()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 rounded-lg text-xs shadow-lg transition flex items-center justify-center gap-2">
+                                <span>⚡</span> Give +100,000 Coins
+                            </button>
+                        </div>
+
+                        <div class="roblox-card p-5 rounded-xl border-red-900/30 space-y-3">
+                            <h3 class="font-bold text-white text-sm flex items-center gap-2"><span>⚡</span> Quick World Commands</h3>
+                            <div class="space-y-2">
+                                <button onclick="runAdminCommand(':speed 25')" class="w-full text-left text-xs bg-gray-800 hover:bg-gray-700 p-2.5 rounded text-gray-300 font-mono">:speed 25</button>
+                                <button onclick="runAdminCommand(':gravity')" class="w-full text-left text-xs bg-gray-800 hover:bg-gray-700 p-2.5 rounded text-gray-300 font-mono">:gravity (Moon Mode)</button>
+                                <button onclick="runAdminCommand(':spawn')" class="w-full text-left text-xs bg-gray-800 hover:bg-gray-700 p-2.5 rounded text-gray-300 font-mono">:spawn block</button>
+                                <button onclick="runAdminCommand(':clear')" class="w-full text-left text-xs bg-gray-800 hover:bg-gray-700 p-2.5 rounded text-gray-300 font-mono">:clear world</button>
+                            </div>
+                        </div>
+
+                        <div class="roblox-card p-5 rounded-xl border-red-900/30 space-y-3">
+                            <h3 class="font-bold text-white text-sm flex items-center gap-2"><span>📊</span> Server Telemetry</h3>
+                            <div class="bg-gray-900 p-3 rounded-lg font-mono text-[11px] text-gray-300 space-y-1 h-32 overflow-y-auto">
+                                <p class="text-emerald-400">[SYSTEM] Mobile Touch Gateway active.</p>
+                                <p>[AUTH] Active User verified.</p>
+                                <p class="text-amber-400">[TREASURY] Admin coin privileges active.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- FULLSCREEN 3D GAME CLIENT OVERLAY -->
+    <div id="game-client" class="fixed inset-0 bg-black z-50 hidden flex flex-col">
+        <!-- Top Game Header Bar -->
+        <div class="absolute top-3 left-3 right-3 sm:right-auto z-50 flex items-center justify-between sm:justify-start space-x-2 bg-gray-900/90 backdrop-blur border border-gray-700 px-3 py-2 rounded-xl">
+            <div class="flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="font-bold text-xs sm:text-sm">BloxVibe v1.2</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button id="in-game-admin-btn" onclick="toggleInGameAdminPanel()" class="bg-red-900 hover:bg-red-800 text-red-200 border border-red-700 px-2.5 py-1 rounded-lg text-xs font-bold transition">🛡️ CMD</button>
+                <button onclick="exitGame()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-xs font-bold transition">Leave</button>
+            </div>
+        </div>
+
+        <!-- MOBILE TOUCH VIRTUAL CONTROLLER (D-PAD & JUMP) -->
+        <div id="mobile-controls" class="absolute bottom-6 left-6 z-50 grid grid-cols-3 gap-2 w-36 h-36 select-none">
+            <div></div>
+            <button ontouchstart="startMove('forward')" ontouchend="stopMove('forward')" onmousedown="startMove('forward')" onmouseup="stopMove('forward')" class="bg-gray-800/80 active:bg-blue-600 border border-gray-600 rounded-xl flex items-center justify-center text-lg text-white shadow-lg">⬆️</button>
+            <div></div>
+            <button ontouchstart="startMove('left')" ontouchend="stopMove('left')" onmousedown="startMove('left')" onmouseup="stopMove('left')" class="bg-gray-800/80 active:bg-blue-600 border border-gray-600 rounded-xl flex items-center justify-center text-lg text-white shadow-lg">⬅️</button>
+            <button ontouchstart="startMove('jump')" ontouchend="stopMove('jump')" onmousedown="startMove('jump')" onmouseup="stopMove('jump')" class="bg-blue-600/90 active:bg-blue-500 border border-blue-400 rounded-xl flex items-center justify-center text-[11px] font-bold text-white shadow-lg">JUMP</button>
+            <button ontouchstart="startMove('right')" ontouchend="stopMove('right')" onmousedown="startMove('right')" onmouseup="stopMove('right')" class="bg-gray-800/80 active:bg-blue-600 border border-gray-600 rounded-xl flex items-center justify-center text-lg text-white shadow-lg">➡️️</button>
+            <div></div>
+            <button ontouchstart="startMove('backward')" ontouchend="stopMove('backward')" onmousedown="startMove('backward')" onmouseup="stopMove('backward')" class="bg-gray-800/80 active:bg-blue-600 border border-gray-600 rounded-xl flex items-center justify-center text-lg text-white shadow-lg">⬇️️</button>
+            <div></div>
+        </div>
+
+        <!-- In-game Admin Command Bar -->
+        <div id="ingame-admin-bar" class="absolute bottom-48 sm:bottom-20 left-1/2 transform -translate-x-1/2 z-50 hidden w-11/12 max-w-sm admin-theme p-3 rounded-xl shadow-2xl">
+            <div class="flex items-center justify-between mb-2 pb-1 border-b border-red-900/50">
+                <span class="text-xs font-bold text-red-400 uppercase tracking-wider">Server Command Line</span>
+                <span class="text-[10px] text-gray-400">Press ENTER or tap button</span>
+            </div>
+            <input type="text" id="admin-cmd-input" placeholder="Type e.g. :coins or :speed 25" onkeydown="handleAdminKeypress(event)" class="w-full bg-black/60 border border-red-900/40 rounded px-3 py-2 text-sm text-white outline-none font-mono">
+            <div class="flex flex-wrap gap-1.5 mt-2">
+                <button onclick="runAdminCommand(':coins')" class="text-[10px] bg-amber-900/60 hover:bg-amber-800 px-2.5 py-1 rounded font-mono text-amber-300">:coins</button>
+                <button onclick="runAdminCommand(':speed 25')" class="text-[10px] bg-gray-800 hover:bg-gray-700 px-2.5 py-1 rounded font-mono text-gray-300">:speed 25</button>
+                <button onclick="runAdminCommand(':spawn')" class="text-[10px] bg-gray-800 hover:bg-gray-700 px-2.5 py-1 rounded font-mono text-gray-300">:spawn</button>
+                <button onclick="runAdminCommand(':clear')" class="text-[10px] bg-gray-800 hover:bg-gray-700 px-2.5 py-1 rounded font-mono text-gray-300">:clear</button>
+            </div>
+        </div>
+
+        <div id="canvas-container" class="flex-1 w-full h-full"></div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        let currentUser = null;
+        let isAdminAuthorized = false;
+        let userCoins = 4500;
+        let playerSpeed = 12;
+        let worldGravity = 0;
+        let spawnedObjects = [];
+
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function switchAuthTab(tab) {
+            ['login', 'signup', 'admin'].forEach(t => {
+                document.getElementById(`form-${t}`).classList.add('hidden');
+                document.getElementById(`auth-tab-${t}`).className = "py-2.5 rounded-lg text-gray-400 hover:text-white transition";
+            });
+            document.getElementById(`form-${tab}`).classList.remove('hidden');
+            const activeTab = document.getElementById(`auth-tab-${tab}`);
+            if (tab === 'admin') {
+                activeTab.className = "py-2.5 rounded-lg bg-red-950/60 text-red-400 border border-red-900/50 transition font-bold";
+            } else {
+                activeTab.className = "py-2.5 rounded-lg bg-gray-800 text-white transition font-bold";
+            }
+        }
+
+        async function processSignup() {
+            const email = document.getElementById('signup-email').value.trim();
+            const password = document.getElementById('signup-password').value;
+
+            if (!email || !password) {
+                alert("Please enter both an email and a password to sign up.");
+                return;
+            }
+
+            const hashedPassword = await hashPassword(password);
+            let users = JSON.parse(localStorage.getItem('blox_users') || '{}');
+
+            if (users[email]) {
+                alert("An account with this email already exists. Please log in.");
+                return;
+            }
+
+            users[email] = { password: hashedPassword, coins: 4500 };
+            localStorage.setItem('blox_users', JSON.stringify(users));
+
+            loginSession(email, false);
+            alert("🎉 Account created & signed in instantly!");
+        }
+
+        async function processLogin() {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            if (!email || !password) {
+                alert("Please enter your email and password.");
+                return;
+            }
+
+            const hashedPassword = await hashPassword(password);
+            let users = JSON.parse(localStorage.getItem('blox_users') || '{}');
+
+            if (!users[email] || users[email].password !== hashedPassword) {
+                alert("Invalid email or password.");
+                return;
+            }
+
+            loginSession(email, false);
+        }
+
+        function processAdminLogin() {
+            const usernameId = document.getElementById('admin-username-input').value.trim();
+
+            if (usernameId.toLowerCase() === 'grandemperor') {
+                loginSession('GrandEmperor', true);
+                alert("🔐 Admin Session Authorized for GrandEmperor!");
+            } else {
+                alert("❌ Unauthorized Admin ID. Only 'GrandEmperor' has administrative clearance.");
+            }
+        }
+
+        function handleAuthKeypress(event, formType) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                if (formType === 'login') processLogin();
+                else if (formType === 'signup') processSignup();
+                else if (formType === 'admin') processAdminLogin();
+            }
+        }
+
+        function loginSession(identifier, adminMode) {
+            currentUser = identifier;
+            isAdminAuthorized = adminMode;
+
+            document.getElementById('auth-overlay').classList.add('hidden');
+            document.getElementById('display-username').textContent = identifier;
+            document.getElementById('welcome-heading').textContent = `Welcome back, ${identifier}`;
+            document.getElementById('user-avatar-initials').textContent = identifier.substring(0, 2).toUpperCase();
+
+            const badge = document.getElementById('badge-role');
+            const navAdmin = document.getElementById('nav-admin');
+            const inGameBtn = document.getElementById('in-game-admin-btn');
+
+            if (isAdminAuthorized) {
+                badge.textContent = "Admin";
+                badge.className = "text-xs bg-red-500/20 text-red-400 border border-red-500/30 px-2.5 py-1 rounded-full font-semibold";
+                navAdmin.classList.remove('hidden');
+                if(inGameBtn) inGameBtn.classList.remove('hidden');
+            } else {
+                badge.textContent = "Member";
+                badge.className = "text-xs bg-cyan-500/20 text-cyan-400 px-2.5 py-1 rounded-full font-semibold";
+                navAdmin.classList.add('hidden');
+                if(inGameBtn) inGameBtn.classList.add('hidden');
+            }
+            updateCoinDisplay();
+        }
+
+        function logoutUser() {
+            currentUser = null;
+            isAdminAuthorized = false;
+            document.getElementById('auth-overlay').classList.remove('hidden');
+            switchTab('home');
+        }
+
+        function updateCoinDisplay() {
+            document.getElementById('coin-display').textContent = userCoins.toLocaleString();
+            const storeBadge = document.getElementById('store-coin-badge');
+            if(storeBadge) storeBadge.textContent = userCoins.toLocaleString() + " 🪙";
+        }
+
+        function adminGiveUnlimitedCoins() {
+            if (!isAdminAuthorized) return;
+            userCoins += 100000;
+            updateCoinDisplay();
+            alert("⚡ Admin Treasury: Successfully generated +100,000 BloxVibe Coins!");
+        }
+
+        function buyCoins(amount, price) {
+            userCoins += amount;
+            updateCoinDisplay();
+            alert(`✅ Purchase Successful! Added ${amount.toLocaleString()} coins for $${price}. (Applied 40% bonus mobile value!)`);
+        }
+
+        function buyItem(itemName, cost) {
+            if (userCoins >= cost) {
+                userCoins -= cost;
+                updateCoinDisplay();
+                alert(`🎉 Successfully purchased "${itemName}" for ${cost} coins!`);
+            } else {
+                alert(`❌ Insufficient Coins! You need ${cost} coins, but you only have ${userCoins.toLocaleString()}.`);
+            }
+        }
+
+        function switchTab(tabName) {
+            if (tabName === 'admin' && !isAdminAuthorized) return;
+            ['home', 'games', 'store', 'avatar', 'create', 'admin'].forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                if(el) el.classList.add('hidden');
+                const nav = document.getElementById(`nav-${t}`);
+                if(nav) {
+                    nav.classList.remove('bg-gray-800', 'text-white');
+                    if(t !== 'admin') nav.classList.add('text-gray-400');
+                }
+            });
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            const activeNav = document.getElementById(`nav-${tabName}`);
+            if(activeNav) {
+                activeNav.classList.add('bg-gray-800', 'text-white');
+                activeNav.classList.remove('text-gray-400');
+            }
+        }
+
+        function toggleInGameAdminPanel() {
+            if (!isAdminAuthorized) return;
+            const bar = document.getElementById('ingame-admin-bar');
+            bar.classList.toggle('hidden');
+            if (!bar.classList.contains('hidden')) {
+                document.getElementById('admin-cmd-input').focus();
+            }
+        }
+
+        function handleAdminKeypress(event) {
+            if (event.key === 'Enter') {
+                const input = document.getElementById('admin-cmd-input');
+                runAdminCommand(input.value);
+                input.value = '';
+            }
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === '\\' && isAdminAuthorized) {
+                e.preventDefault();
+                toggleInGameAdminPanel();
+            }
+        });
+
+        function runAdminCommand(cmd) {
+            if (!isAdminAuthorized) {
+                alert("Unauthorized.");
+                return;
+            }
+
+            const parts = cmd.trim().toLowerCase().split(' ');
+            const action = parts[0];
+            const arg = parts[1];
+
+            if (action === ':coins') {
+                adminGiveUnlimitedCoins();
+            } else if (action === ':speed') {
+                const val = parseFloat(arg);
+                if (!isNaN(val)) {
+                    playerSpeed = val;
+                    alert(`Admin: Speed set to ${playerSpeed}`);
+                }
+            } else if (action === ':gravity') {
+                worldGravity = worldGravity === 0 ? -5 : 0;
+                alert(`Admin: Low gravity mode ${worldGravity !== 0 ? 'ENABLED' : 'DISABLED'}`);
+            } else if (action === ':spawn') {
+                spawnAdminBlock();
+                alert("Admin: Spawned administration brick.");
+            } else if (action === ':clear') {
+                clearAdminBlocks();
+                alert("Admin: Cleared spawned sandbox bricks.");
+            } else {
+                alert(`Unknown command: ${cmd}`);
+            }
+        }
+
+        let scene, camera, renderer, player;
+        let moveForward = false, moveBackward = false, moveLeft = false, moveRight = false;
+        let playerVelocityY = 0, isGrounded = true;
+
+        function startMove(direction) {
+            if (direction === 'forward') moveForward = true;
+            if (direction === 'backward') moveBackward = true;
+            if (direction === 'left') moveLeft = true;
+            if (direction === 'right') moveRight = true;
+            if (direction === 'jump' && isGrounded) {
+                playerVelocityY = 0.22;
+                isGrounded = false;
+            }
+        }
+
+        function stopMove(direction) {
+            if (direction === 'forward') moveForward = false;
+            if (direction === 'backward') moveBackward = false;
+            if (direction === 'left') moveLeft = false;
+            if (direction === 'right') moveRight = false;
+        }
+
+        function launchGame() {
+            document.getElementById('game-client').classList.remove('hidden');
+            init3DWorld();
+        }
+
+        function exitGame() {
+            document.getElementById('game-client').classList.add('hidden');
+            document.getElementById('ingame-admin-bar').classList.add('hidden');
+            const container = document.getElementById('canvas-container');
+            container.innerHTML = '';
+        }
+
+        function spawnAdminBlock() {
+            if (!scene || !player) return;
+            const geo = new THREE.BoxGeometry(3, 3, 3);
+            const mat = new THREE.MeshStandardMaterial({ color: 0xdc2626, emissive: 0x450a0a });
+            const block = new THREE.Mesh(geo, mat);
+            block.position.copy(player.position);
+            block.position.z -= 6;
+            block.position.y += 2;
+            block.castShadow = true;
+            block.receiveShadow = true;
+            scene.add(block);
+            spawnedObjects.push(block);
+        }
+
+        function clearAdminBlocks() {
+            spawnedObjects.forEach(obj => scene.remove(obj));
+            spawnedObjects = [];
+        }
+
+        function init3DWorld() {
+            const container = document.getElementById('canvas-container');
+            container.innerHTML = '';
+            spawnedObjects = [];
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x87ceeb);
+            scene.fog = new THREE.FogExp2(0x87ceeb, 0.015);
+
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 5, 10);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            container.appendChild(renderer.domElement);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const sunLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            sunLight.position.set(50, 100, 50);
+            sunLight.castShadow = true;
+            scene.add(sunLight);
+
+            const floorGeo = new THREE.BoxGeometry(100, 2, 100);
+            const floorMat = new THREE.MeshStandardMaterial({ color: 0x808080 });
+            const floor = new THREE.Mesh(floorGeo, floorMat);
+            floor.position.y = -1;
+            floor.receiveShadow = true;
+            scene.add(floor);
+
+            const playerGeo = new THREE.BoxGeometry(2, 4, 1);
+            const playerMat = new THREE.MeshStandardMaterial({ color: 0x0074bd });
+            player = new THREE.Mesh(playerGeo, playerMat);
+            player.position.set(0, 2, 0);
+            player.castShadow = true;
+            scene.add(player);
+
+            window.addEventListener('keydown', onKeyDown);
+            window.addEventListener('keyup', onKeyUp);
+            window.addEventListener('resize', onWindowResize);
+
+            animate();
+        }
+
+        function onKeyDown(event) {
+            switch (event.code) {
+                case 'KeyW': moveForward = true; break;
+                case 'KeyS': moveBackward = true; break;
+                case 'KeyA': moveLeft = true; break;
+                case 'KeyD': moveRight = true; break;
+                case 'Space':
+                    if (isGrounded) {
+                        playerVelocityY = 0.22;
+                        isGrounded = false;
+                    }
+                    break;
+            }
+        }
+
+        function onKeyUp(event) {
+            switch (event.code) {
+                case 'KeyW': moveForward = false; break;
+                case 'KeyS': moveBackward = false; break;
+                case 'KeyA': moveLeft = false; break;
+                case 'KeyD': moveRight = false; break;
+            }
+        }
+
+        function onWindowResize() {
+            if (!camera || !renderer) return;
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        let prevTime = performance.now();
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const time = performance.now();
+            const delta = (time - prevTime) / 1000;
+
+            if (player) {
+                if (moveForward) player.position.z -= playerSpeed * delta;
+                if (moveBackward) player.position.z += playerSpeed * delta;
+                if (moveLeft) player.position.x -= playerSpeed * delta;
+                if (moveRight) player.position.x += playerSpeed * delta;
+
+                if (!isGrounded || player.position.y > 2) {
+                    playerVelocityY -= 0.01;
+                    player.position.y += playerVelocityY;
+                    if (player.position.y <= 2) {
+                        player.position.y = 2;
+                        playerVelocityY = 0;
+                        isGrounded = true;
+                    }
+                }
+
+                camera.position.x = player.position.x;
+                camera.position.y = player.position.y + 6;
+                camera.position.z = player.position.z + 12;
+                camera.lookAt(player.position);
+            }
+
+            prevTime = time;
+            renderer.render(scene, camera);
+        }
+    </script>
+</body>
+</html>
+</pre>
+        </body>
+    </html>
